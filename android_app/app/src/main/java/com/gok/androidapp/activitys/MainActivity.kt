@@ -1,10 +1,11 @@
 package com.gok.androidapp.activitys
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -17,7 +18,7 @@ import com.squareup.picasso.Picasso
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
-class MainActivity : AppCompatActivity(), Observer<MainModel>  {
+class MainActivity : AppCompatActivity(), Observer<HashMap<Int, MainModel?>>  {
 
     private val mainViewModel: MainViewModel by viewModel()
 
@@ -25,40 +26,41 @@ class MainActivity : AppCompatActivity(), Observer<MainModel>  {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        mainViewModel.loadData()?.observe(this, this);
+        mainViewModel.loadData().observe(this, this);
     }
 
     fun initViews(mainModel: MainModel){
 
-        var imageView = findViewById<ImageView>(R.id.image_view_cash)
+        val imageView = findViewById<ImageView>(R.id.image_view_cash)
         Picasso.get().load(mainModel.cashModel.bannerURL).into(imageView)
 
-        var titleArray = mainModel.cashModel.title.split(" ")
-        var textViewTitle1 = findViewById<TextView>(R.id.text_view1)
+        val titleArray = mainModel.cashModel.title.split(" ")
+        val textViewTitle1 = findViewById<TextView>(R.id.text_view1)
         textViewTitle1.setText(titleArray[0])
 
-        var textViewTitle2 = findViewById<TextView>(R.id.text_view2)
+        val textViewTitle2 = findViewById<TextView>(R.id.text_view2)
         textViewTitle2.setText(titleArray[1])
 
-        var LayoutManagerSpotlight = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
-        var recyclerViewSpotLight = findViewById<RecyclerView>(R.id.recycle_view).apply {
+        val LayoutManagerSpotlight = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
+        val recyclerViewSpotLight = findViewById<RecyclerView>(R.id.recycle_view).apply {
             setHasFixedSize(true)
             layoutManager = LayoutManagerSpotlight
         }
         recyclerViewSpotLight.adapter = SpotlightAdapter(mainModel.listSpotlightModel)
 
-        var LayoutManagerProduct = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
-        var recyclerViewProduct = findViewById<RecyclerView>(R.id.recycle_view_product).apply {
+        val LayoutManagerProduct = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
+        val recyclerViewProduct = findViewById<RecyclerView>(R.id.recycle_view_product).apply {
             setHasFixedSize(true)
             layoutManager = LayoutManagerProduct
         }
         recyclerViewProduct.adapter = ProductAdapter(mainModel.listProductModel)
     }
 
-    override fun onChanged(mainModel: MainModel) {
+    override fun onChanged(hashMap: HashMap<Int, MainModel?>) {
 
-        Log.d("teste", "teste")
-        initViews(mainModel)
+        val success = 200
+        val mainModel = hashMap.get(success)
+        if(hashMap.containsKey(success)) initViews(mainModel!!) else  Toast.makeText(this, getString(R.string.error_generic_http), Toast.LENGTH_LONG).show()
     }
 
 }

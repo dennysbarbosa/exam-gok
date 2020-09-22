@@ -8,18 +8,22 @@ import com.gok.androidapp.network.ApiConnection
 import retrofit2.Response
 import java.io.IOException
 
-class MainAsyncTask: AsyncTask<Void, Void, MainModel>() {
+class MainAsyncTask: AsyncTask<Void, Void, Response<MainModel>>() {
 
-    override fun doInBackground(vararg params: Void?): MainModel? {
+    companion object {
+        const val ERROR_GENERIC = 500
+    }
 
-        var response: Response<MainModel?>? = null
+    override fun doInBackground(vararg params: Void?): Response<MainModel>? {
+
+        var response: Response<MainModel>? = null
         try {
             response = ApiConnection().connection(BuildConfig.API_URL_RESOURCE).create(GokApi::class.java).getData().execute()
         } catch (e: IOException) {
             e.printStackTrace()
+            response = Response.error(ERROR_GENERIC, null)
         }
-        return response?.body()
+        return response
     }
-
 
 }

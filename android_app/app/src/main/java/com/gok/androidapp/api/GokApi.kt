@@ -7,6 +7,6 @@ import retrofit2.http.Query
 
 interface GokApi{
 
-    @GET("sandbox/products")
+    @GET("sandbox/product")
     public fun getData(): Call<MainModel>
 }

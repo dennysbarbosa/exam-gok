@@ -2,22 +2,16 @@ package com.gok.androidapp.viewmodels
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.gok.androidapp.asynctasks.MainAsyncTask
 import com.gok.androidapp.models.MainModel
+import com.gok.androidapp.repository.impl.MainRepositoryImpl
 
-class MainViewModel(mainAsyncTask: MainAsyncTask): ViewModel() {
+class MainViewModel(mainRepositoryImpl: MainRepositoryImpl): ViewModel() {
 
-    private var mainAsyncTask = mainAsyncTask
+    private var mainRepositoryImpl = mainRepositoryImpl
 
-    fun loadData(): MutableLiveData<MainModel>? {
-        val mainModelLiveData: MutableLiveData<MainModel> =
-            MutableLiveData()
-        try {
-            val mainModel: MainModel = mainAsyncTask.execute().get()
-            mainModelLiveData.setValue(mainModel)
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-        return mainModelLiveData
+    fun loadData(): MutableLiveData<HashMap<Int, MainModel?>> {
+
+        var mutableLiveData = mainRepositoryImpl.getData()
+        return mutableLiveData
     }
 }

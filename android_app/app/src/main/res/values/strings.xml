@@ -1,4 +1,6 @@
 <resources>
     <string name="app_name">Android App</string>
     <string name="tv_products">Produtos</string>
+    <!--errors-->
+    <string name="error_generic_http">Falha na conexão!</string>
 </resources>
